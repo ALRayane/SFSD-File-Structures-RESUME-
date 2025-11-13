@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Organization Methods</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        h1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            font-size: 2em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th {
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+            color: white;
+            padding: 16px 12px;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            border-bottom: 3px solid #667eea;
+        }
+
+        td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+            line-height: 1.6;
+        }
+
+        tr:hover {
+            background: #f7fafc;
+        }
+
+        .method-name {
+            font-weight: 700;
+            color: #2d3748;
+            font-size: 15px;
+        }
+
+        .method-desc {
+            color: #718096;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .best {
+            color: #059669;
+            font-weight: 600;
+        }
+
+        .worst {
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        .warning {
+            color: #d97706;
+            font-weight: 600;
+        }
+
+        .complexity {
+            font-family: 'Courier New', monospace;
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .note {
+            color: #64748b;
+            font-size: 11px;
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        .icon {
+            margin-right: 6px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>📊 File Organization Methods - Complexity Analysis</h1>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="min-width: 200px;">METHOD</th>
+                        <th style="min-width: 200px;">SEARCH</th>
+                        <th style="min-width: 200px;">INSERT</th>
+                        <th style="min-width: 200px;">DELETE</th>
+                        <th style="min-width: 200px;">BULK LOAD</th>
+                        <th style="min-width: 200px;">REORGANIZE</th>
+                        <th style="min-width: 200px;">MERGE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="method-name">TOF</div>
+                            <div class="method-desc">(Table, Ordered, Fixed)</div>
+                        </td>
+                        <td>
+                            <span class="best">✅ Best:</span> <span class="complexity">O(log B)</span><br>
+                            <span class="best">Avg/Worst:</span> <span class="complexity">O(log B)</span>
+                            <div class="note">→ External binary search (blocks = B)</div>
+                        </td>
+                        <td>
+                            <span class="worst">❌ Best:</span> <span class="complexity">O(1)</span> if appending & space
+                            exists<br>
+                            <span class="worst">Avg/Worst:</span> <span class="complexity">O(B)</span>
+                            <div class="note">→ Costly inter-block shifts to maintain order</div>
+                        </td>
+                        <td>
+                            <span class="worst">❌ Best:</span> <span class="complexity">O(1)</span> tail delete<br>
+                            <span class="worst">Avg/Worst:</span> <span class="complexity">O(B)</span>
+                            <div class="note">→ Shift records/blocks to fill gap</div>
+                        </td>
+                        <td>
+                            <span class="best">✅ Best/Avg/Worst:</span> <span class="complexity">O(N log N)</span> I/O
+                            (external sort)
+                            <div class="note">→ One-time sort + sequential write</div>
+                        </td>
+                        <td>
+                            <span class="best">✅ Best/Avg/Worst:</span> <span class="complexity">O(B)</span>
+                            <div class="note">→ Linear scan + repack at target fill factor (e.g., 70%)</div>
+                        </td>
+                        <td>
+                            <span class="best">✅ Best/Avg/Worst:</span> <span class="complexity">O(B₁ + B₂)</span>
+                            <div class="note">→ Standard 2-way merge (like merge-sort phase)</div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="method-name">TOVS</div>
+                            <div class="method-desc">(Table, Ordered, Variable, Straddling)</div>
+                        </td>
+                        <td>
+                            <span class="warning">⚠️ Best/Avg/Worst:</span> <span class="complexity">O(log B)</span>
+                            <div class="note">→ Binary search on block level only; must scan within block (variable
+                                layout ⇒ no direct indexing)</div>
+                        </td>
+                        <td>
+                            <span class="worst">❌ Worst:</span> <span class="complexity">O(B)</span> I/O + parsing
+                            overhead
+                            <div class="note">→ Shifts + straddling handling (cross-block writes)</div>
+                        </td>
+                        <td>
+                            <span class="worst">❌ Worst:</span> <span class="complexity">O(B)</span>
+                            <div class="note">→ Logical delete preferred; physical delete = shift + straddling fix</div>
+                        </td>
+                        <td>
+                            <span class="best">✅ Best/Avg/Worst:</span> <span class="complexity">O(N log N)</span>
+                            <div class="note">→ Sort by key, then pack with straddling (more complex buffer mgmt)</div>
+                        </td>
+                        <td>
+                            <span class="warning">⚠️ Worst:</span> <span class="complexity">O(B)</span> +
+                            parsing/straddling cost
+                            <div class="note">→ Higher than TOF due to variable parsing</div>
+                        </td>
+                        <td>
+                            <span class="best">✅ Best/Avg/Worst:</span> <span class="complexity">O(B₁ + B₂)</span>
+                            <div class="note">→ Merge with careful straddle-aware buffering</div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="method-name">TOVŜ</div>
+                            <div class="method-desc">(Table, Ordered, Variable, No Straddling) (i.e., S̅)</div>
+                        </td>
+                        <td>
+                            <span class="warning">⚠️ Best/Avg/Worst:</span> <span class="complexity">O(log B)</span>
+                            block search + <span class="complexity">O(Rᵦ)</span> scan per block (Rᵦ = recs/block)
+                        </td>
+                        <td>
+                            <span class="worst">❌ Worst:</span> <span class="complexity">O(B)</span> I/O + high internal
+                            fragmentation
+                            <div class="note">→ Records never cross blocks ⇒ more wasted space, more splits</div>
+                        </td>
+                        <td>
+                            <span class="warning">⚠️ Same as TOVS but no straddle fix</span>
+                            <div class="note">→ Simpler, but more block splits/merges ⇒ higher block count</div>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(N log N)</span>
+                            <div class="note">→ Easier than straddling version (no cross-block writes)</div>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(B)</span> — simpler than TOVS (no
+                            straddling resolution)
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(B₁ + B₂)</span> — simpler merging
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="method-name">TÔF</div>
+                            <div class="method-desc">(Table, Not Ordered, Fixed)</div>
+                            <div class="note">(Slide 74 says "not ordered", contradicts earlier; we follow slide 74)
+                            </div>
+                        </td>
+                        <td>
+                            <span class="worst">❌ Best/Avg/Worst:</span> <span class="complexity">O(B)</span>
+                            <div class="note">→ Linear scan (unsorted)</div>
+                        </td>
+                        <td>
+                            <span class="best">✅ Best/Avg/Worst:</span> <span class="complexity">O(1)</span>
+                            <div class="note">→ Append to tail (possibly new block)</div>
+                        </td>
+                        <td>
+                            <span class="best">✅ Best/Avg/Worst:</span> <span class="complexity">O(1)</span>
+                            <div class="note">→ Overwrite with last record (no gaps)</div>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(N)</span> — just write sequentially
+                        </td>
+                        <td>
+                            <span class="best">✅ Unnecessary</span> (100% packed, no fragmentation)
+                        </td>
+                        <td>
+                            <span class="warning">⚠️</span> <span class="complexity">O(B₁ + B₂)</span> — concatenate
+                            (but result still unsorted)
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="method-name">TÔVS</div>
+                            <div class="method-desc">(Table, Not Ordered, Variable, Straddling)</div>
+                        </td>
+                        <td>
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span> + parsing → <span
+                                class="complexity">O(N)</span> chars scanned
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(1)</span> amortized — append (with
+                            straddle handling)
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(1)</span> logical delete; <span
+                                class="complexity">O(N)</span> for physical compaction
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(N)</span> — stream append
+                        </td>
+                        <td>
+                            <span class="warning">⚠️</span> <span class="complexity">O(B)</span> — needed to reclaim
+                            LostBytes; straddling adds cost
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(B₁ + B₂)</span> — concatenation (may
+                            need header merge)
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="method-name">TÔVŜ</div>
+                            <div class="method-desc">(Table, Not Ordered, Variable, No Straddling)</div>
+                        </td>
+                        <td>
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span> + internal scan
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(1)</span> — append; possibly waste
+                            space
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(1)</span> soft-delete
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(N)</span> — simpler than straddling
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(B)</span> — simpler reorg (no
+                            straddling)
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(B₁ + B₂)</span> — concatenate
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="method-name">LOF</div>
+                            <div class="method-desc">(List, Ordered, Fixed)</div>
+                        </td>
+                        <td>
+                            <span class="warning">⚠️ Best/Avg/Worst:</span> <span class="complexity">O(B)</span>
+                            <div class="note">→ Cannot binary search — must traverse pointers</div>
+                        </td>
+                        <td>
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span> — locate + insert +
+                            possible split + link update
+                        </td>
+                        <td>
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span> — locate + shift or
+                            logical flag
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(N log N)</span> → sort + build linked
+                            list
+                        </td>
+                        <td>
+                            <span class="warning">⚠️</span> <span class="complexity">O(B)</span> — re-link, repack (more
+                            pointer ops than TOF)
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(B₁ + B₂)</span> — pointer-based merge
+                            (like merge-sort on linked lists)
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="method-name">LOVS</div>
+                            <div class="method-desc">(List, Ordered, Variable, Straddling)</div>
+                        </td>
+                        <td>
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span> + variable parsing per
+                            block
+                        </td>
+                        <td>
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span> + straddling I/O overhead
+                        </td>
+                        <td>
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span> — same + straddle handling
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(N log N)</span> — sort + linked
+                            straddled write
+                        </td>
+                        <td>
+                            <span class="warning">⚠️</span> <span class="complexity">O(B)</span> — expensive: fix links
+                            + straddles + repack
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(B₁ + B₂)</span> — complex pointer &
+                            straddle merge
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="method-name">LOVŜ</div>
+                            <div class="method-desc">(List, Ordered, Variable, No Straddling)</div>
+                        </td>
+                        <td>
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span> + parsing
+                        </td>
+                        <td>
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span> — simpler than LOVS (no
+                            straddling)
+                        </td>
+                        <td>
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span> — same
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(N log N)</span>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(B)</span> — simpler than LOVS
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(B₁ + B₂)</span> — easier merge
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="method-name">LÔF</div>
+                            <div class="method-desc">(List, Not Ordered, Fixed)</div>
+                        </td>
+                        <td>
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span> — linear traversal
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(1)</span> — append to tail (update
+                            link)
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(1)</span> — logical delete or
+                            overwrite-last (if allowed)
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(N)</span> — stream build linked list
+                        </td>
+                        <td>
+                            <span class="warning">⚠️</span> <span class="complexity">O(B)</span> — rarely needed (but
+                            may defrag pointers)
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(1)</span> pointer join — Tail₁.link =
+                            Head₂ (concat in O(1)!)
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="method-name">LÔVS</div>
+                            <div class="method-desc">(List, Not Ordered, Variable, Straddling)</div>
+                        </td>
+                        <td>
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span> + parsing
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(1)</span> amortized — append with
+                            Write_string
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(1)</span> soft-delete; <span
+                                class="complexity">O(B)</span> for physical cleanup
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(N)</span> — append stream with
+                            straddling
+                        </td>
+                        <td>
+                            <span class="warning">⚠️</span> <span class="complexity">O(B)</span> — reclaim lost bytes &
+                            compact straddles
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(1)</span> pointer join — if headers
+                            merged properly
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="method-name">LÔVŜ</div>
+                            <div class="method-desc">(List, Not Ordered, Variable, No Straddling)</div>
+                        </td>
+                        <td>
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span> + parsing
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(1)</span> — append
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(1)</span> soft-delete
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(N)</span> — simple
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(B)</span> — easier reorg
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(1)</span> pointer join
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>
