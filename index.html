@@ -24,6 +24,7 @@
             border-radius: 12px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             overflow: hidden;
+            margin-bottom: 20px;
         }
 
         h1 {
@@ -33,6 +34,57 @@
             text-align: center;
             font-size: 2em;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .controls {
+            display: flex;
+            gap: 20px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: white;
+            padding: 8px 12px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .control-label {
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 14px;
+        }
+
+        .toggle-btn {
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .toggle-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .toggle-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #764ba2;
         }
 
         .table-wrapper {
@@ -111,16 +163,69 @@
             font-style: italic;
         }
 
-        .icon {
-            margin-right: 6px;
+        .advantages {
+            margin-bottom: 12px;
+        }
+
+        .advantages-title {
+            font-weight: 700;
+            color: #059669;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .disadvantages-title {
+            font-weight: 700;
+            color: #dc2626;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .bullet-list {
+            margin-left: 16px;
+            line-height: 1.8;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h1>📊 File Organization Methods - Complexity Analysis</h1>
-        <div class="table-wrapper">
+        <h1>📊 File Organization Methods - Comprehensive Analysis</h1>
+
+        <div class="controls">
+            <div class="control-group">
+                <span class="control-label">View:</span>
+                <button class="toggle-btn active" onclick="switchView('complexity')">⚡ Complexity</button>
+                <button class="toggle-btn" onclick="switchView('advantages')">📋 Pros & Cons</button>
+            </div>
+
+            <div class="control-group" id="indexingControl">
+                <span class="control-label">Indexing:</span>
+                <button class="toggle-btn active" onclick="switchIndexing('without')">Without Indexing</button>
+                <button class="toggle-btn" onclick="switchIndexing('with')">With Indexing</button>
+            </div>
+        </div>
+
+        <!-- COMPLEXITY TABLE -->
+        <div id="complexityTable" class="table-wrapper fade-in">
             <table>
                 <thead>
                     <tr>
@@ -207,11 +312,11 @@
                     <tr>
                         <td>
                             <div class="method-name">TOVŜ</div>
-                            <div class="method-desc">(Table, Ordered, Variable, No Straddling) (i.e., S̅)</div>
+                            <div class="method-desc">(Table, Ordered, Variable, No Straddling)</div>
                         </td>
                         <td>
                             <span class="warning">⚠️ Best/Avg/Worst:</span> <span class="complexity">O(log B)</span>
-                            block search + <span class="complexity">O(Rᵦ)</span> scan per block (Rᵦ = recs/block)
+                            block search + <span class="complexity">O(Rᵦ)</span> scan per block
                         </td>
                         <td>
                             <span class="worst">❌ Worst:</span> <span class="complexity">O(B)</span> I/O + high internal
@@ -220,18 +325,19 @@
                         </td>
                         <td>
                             <span class="warning">⚠️ Same as TOVS but no straddle fix</span>
-                            <div class="note">→ Simpler, but more block splits/merges ⇒ higher block count</div>
+                            <div class="note">→ Simpler, but more block splits/merges</div>
                         </td>
                         <td>
                             <span class="best">✅</span> <span class="complexity">O(N log N)</span>
-                            <div class="note">→ Easier than straddling version (no cross-block writes)</div>
+                            <div class="note">→ Easier than straddling version</div>
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(B)</span> — simpler than TOVS (no
-                            straddling resolution)
+                            <span class="best">✅</span> <span class="complexity">O(B)</span>
+                            <div class="note">→ Simpler than TOVS</div>
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(B₁ + B₂)</span> — simpler merging
+                            <span class="best">✅</span> <span class="complexity">O(B₁ + B₂)</span>
+                            <div class="note">→ Simpler merging</div>
                         </td>
                     </tr>
 
@@ -239,8 +345,6 @@
                         <td>
                             <div class="method-name">TÔF</div>
                             <div class="method-desc">(Table, Not Ordered, Fixed)</div>
-                            <div class="note">(Slide 74 says "not ordered", contradicts earlier; we follow slide 74)
-                            </div>
                         </td>
                         <td>
                             <span class="worst">❌ Best/Avg/Worst:</span> <span class="complexity">O(B)</span>
@@ -248,21 +352,23 @@
                         </td>
                         <td>
                             <span class="best">✅ Best/Avg/Worst:</span> <span class="complexity">O(1)</span>
-                            <div class="note">→ Append to tail (possibly new block)</div>
+                            <div class="note">→ Append to tail</div>
                         </td>
                         <td>
                             <span class="best">✅ Best/Avg/Worst:</span> <span class="complexity">O(1)</span>
-                            <div class="note">→ Overwrite with last record (no gaps)</div>
+                            <div class="note">→ Overwrite with last record</div>
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(N)</span> — just write sequentially
+                            <span class="best">✅</span> <span class="complexity">O(N)</span>
+                            <div class="note">→ Sequential write</div>
                         </td>
                         <td>
-                            <span class="best">✅ Unnecessary</span> (100% packed, no fragmentation)
+                            <span class="best">✅ Unnecessary</span>
+                            <div class="note">→ 100% packed</div>
                         </td>
                         <td>
-                            <span class="warning">⚠️</span> <span class="complexity">O(B₁ + B₂)</span> — concatenate
-                            (but result still unsorted)
+                            <span class="warning">⚠️</span> <span class="complexity">O(B₁ + B₂)</span>
+                            <div class="note">→ Concatenate (result unsorted)</div>
                         </td>
                     </tr>
 
@@ -272,27 +378,22 @@
                             <div class="method-desc">(Table, Not Ordered, Variable, Straddling)</div>
                         </td>
                         <td>
-                            <span class="worst">❌</span> <span class="complexity">O(B)</span> + parsing → <span
-                                class="complexity">O(N)</span> chars scanned
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span> + parsing
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(1)</span> amortized — append (with
-                            straddle handling)
+                            <span class="best">✅</span> <span class="complexity">O(1)</span> amortized
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(1)</span> logical delete; <span
-                                class="complexity">O(N)</span> for physical compaction
+                            <span class="best">✅</span> <span class="complexity">O(1)</span> logical delete
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(N)</span> — stream append
+                            <span class="best">✅</span> <span class="complexity">O(N)</span>
                         </td>
                         <td>
-                            <span class="warning">⚠️</span> <span class="complexity">O(B)</span> — needed to reclaim
-                            LostBytes; straddling adds cost
+                            <span class="warning">⚠️</span> <span class="complexity">O(B)</span>
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(B₁ + B₂)</span> — concatenation (may
-                            need header merge)
+                            <span class="best">✅</span> <span class="complexity">O(B₁ + B₂)</span>
                         </td>
                     </tr>
 
@@ -302,24 +403,22 @@
                             <div class="method-desc">(Table, Not Ordered, Variable, No Straddling)</div>
                         </td>
                         <td>
-                            <span class="worst">❌</span> <span class="complexity">O(B)</span> + internal scan
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span>
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(1)</span> — append; possibly waste
-                            space
+                            <span class="best">✅</span> <span class="complexity">O(1)</span>
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(1)</span> soft-delete
+                            <span class="best">✅</span> <span class="complexity">O(1)</span>
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(N)</span> — simpler than straddling
+                            <span class="best">✅</span> <span class="complexity">O(N)</span>
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(B)</span> — simpler reorg (no
-                            straddling)
+                            <span class="best">✅</span> <span class="complexity">O(B)</span>
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(B₁ + B₂)</span> — concatenate
+                            <span class="best">✅</span> <span class="complexity">O(B₁ + B₂)</span>
                         </td>
                     </tr>
 
@@ -333,24 +432,19 @@
                             <div class="note">→ Cannot binary search — must traverse pointers</div>
                         </td>
                         <td>
-                            <span class="worst">❌</span> <span class="complexity">O(B)</span> — locate + insert +
-                            possible split + link update
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span>
                         </td>
                         <td>
-                            <span class="worst">❌</span> <span class="complexity">O(B)</span> — locate + shift or
-                            logical flag
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span>
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(N log N)</span> → sort + build linked
-                            list
+                            <span class="best">✅</span> <span class="complexity">O(N log N)</span>
                         </td>
                         <td>
-                            <span class="warning">⚠️</span> <span class="complexity">O(B)</span> — re-link, repack (more
-                            pointer ops than TOF)
+                            <span class="warning">⚠️</span> <span class="complexity">O(B)</span>
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(B₁ + B₂)</span> — pointer-based merge
-                            (like merge-sort on linked lists)
+                            <span class="best">✅</span> <span class="complexity">O(B₁ + B₂)</span>
                         </td>
                     </tr>
 
@@ -360,26 +454,22 @@
                             <div class="method-desc">(List, Ordered, Variable, Straddling)</div>
                         </td>
                         <td>
-                            <span class="worst">❌</span> <span class="complexity">O(B)</span> + variable parsing per
-                            block
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span> + parsing
                         </td>
                         <td>
-                            <span class="worst">❌</span> <span class="complexity">O(B)</span> + straddling I/O overhead
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span>
                         </td>
                         <td>
-                            <span class="worst">❌</span> <span class="complexity">O(B)</span> — same + straddle handling
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span>
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(N log N)</span> — sort + linked
-                            straddled write
+                            <span class="best">✅</span> <span class="complexity">O(N log N)</span>
                         </td>
                         <td>
-                            <span class="warning">⚠️</span> <span class="complexity">O(B)</span> — expensive: fix links
-                            + straddles + repack
+                            <span class="warning">⚠️</span> <span class="complexity">O(B)</span>
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(B₁ + B₂)</span> — complex pointer &
-                            straddle merge
+                            <span class="best">✅</span> <span class="complexity">O(B₁ + B₂)</span>
                         </td>
                     </tr>
 
@@ -389,23 +479,22 @@
                             <div class="method-desc">(List, Ordered, Variable, No Straddling)</div>
                         </td>
                         <td>
-                            <span class="worst">❌</span> <span class="complexity">O(B)</span> + parsing
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span>
                         </td>
                         <td>
-                            <span class="worst">❌</span> <span class="complexity">O(B)</span> — simpler than LOVS (no
-                            straddling)
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span>
                         </td>
                         <td>
-                            <span class="worst">❌</span> <span class="complexity">O(B)</span> — same
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span>
                         </td>
                         <td>
                             <span class="best">✅</span> <span class="complexity">O(N log N)</span>
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(B)</span> — simpler than LOVS
+                            <span class="best">✅</span> <span class="complexity">O(B)</span>
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(B₁ + B₂)</span> — easier merge
+                            <span class="best">✅</span> <span class="complexity">O(B₁ + B₂)</span>
                         </td>
                     </tr>
 
@@ -415,26 +504,22 @@
                             <div class="method-desc">(List, Not Ordered, Fixed)</div>
                         </td>
                         <td>
-                            <span class="worst">❌</span> <span class="complexity">O(B)</span> — linear traversal
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span>
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(1)</span> — append to tail (update
-                            link)
+                            <span class="best">✅</span> <span class="complexity">O(1)</span>
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(1)</span> — logical delete or
-                            overwrite-last (if allowed)
+                            <span class="best">✅</span> <span class="complexity">O(1)</span>
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(N)</span> — stream build linked list
+                            <span class="best">✅</span> <span class="complexity">O(N)</span>
                         </td>
                         <td>
-                            <span class="warning">⚠️</span> <span class="complexity">O(B)</span> — rarely needed (but
-                            may defrag pointers)
+                            <span class="warning">⚠️</span> <span class="complexity">O(B)</span>
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(1)</span> pointer join — Tail₁.link =
-                            Head₂ (concat in O(1)!)
+                            <span class="best">✅</span> <span class="complexity">O(1)</span>
                         </td>
                     </tr>
 
@@ -444,27 +529,22 @@
                             <div class="method-desc">(List, Not Ordered, Variable, Straddling)</div>
                         </td>
                         <td>
-                            <span class="worst">❌</span> <span class="complexity">O(B)</span> + parsing
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span>
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(1)</span> amortized — append with
-                            Write_string
+                            <span class="best">✅</span> <span class="complexity">O(1)</span>
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(1)</span> soft-delete; <span
-                                class="complexity">O(B)</span> for physical cleanup
+                            <span class="best">✅</span> <span class="complexity">O(1)</span>
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(N)</span> — append stream with
-                            straddling
+                            <span class="best">✅</span> <span class="complexity">O(N)</span>
                         </td>
                         <td>
-                            <span class="warning">⚠️</span> <span class="complexity">O(B)</span> — reclaim lost bytes &
-                            compact straddles
+                            <span class="warning">⚠️</span> <span class="complexity">O(B)</span>
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(1)</span> pointer join — if headers
-                            merged properly
+                            <span class="best">✅</span> <span class="complexity">O(1)</span>
                         </td>
                     </tr>
 
@@ -474,28 +554,556 @@
                             <div class="method-desc">(List, Not Ordered, Variable, No Straddling)</div>
                         </td>
                         <td>
-                            <span class="worst">❌</span> <span class="complexity">O(B)</span> + parsing
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span>
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(1)</span> — append
+                            <span class="best">✅</span> <span class="complexity">O(1)</span>
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(1)</span> soft-delete
+                            <span class="best">✅</span> <span class="complexity">O(1)</span>
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(N)</span> — simple
+                            <span class="best">✅</span> <span class="complexity">O(N)</span>
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(B)</span> — easier reorg
+                            <span class="best">✅</span> <span class="complexity">O(B)</span>
                         </td>
                         <td>
-                            <span class="best">✅</span> <span class="complexity">O(1)</span> pointer join
+                            <span class="best">✅</span> <span class="complexity">O(1)</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ADVANTAGES/DISADVANTAGES TABLE - WITHOUT INDEXING -->
+        <div id="advantagesWithoutTable" class="table-wrapper hidden">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="min-width: 180px;">METHOD</th>
+                        <th style="min-width: 400px;">✅ ADVANTAGES</th>
+                        <th style="min-width: 400px;">❌ DISADVANTAGES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="method-name">TOF</div>
+                            <div class="method-desc">(Table, Ordered, Fixed)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Fast O(log B) search via external binary search<br>
+                                – Simple layout, predictable I/O<br>
+                                – Efficient bulk loading & merging
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Insert/delete: O(B) I/O (shifting records/blocks)<br>
+                                – Requires reorganization to maintain performance<br>
+                                – Poor for high-update workloads
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">TOVS</div>
+                            <div class="method-desc">(Table, Ordered, Variable, Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Space-efficient (straddling minimizes waste)<br>
+                                – Ordered → binary search on blocks possible
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Search: O(log B) + linear scan per block (no intra-block indexing)<br>
+                                – Insert/delete: complex (straddle-aware shifting)<br>
+                                – High parsing overhead<br>
+                                – Fragile I/O (record spanning blocks)
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">TOVŜ</div>
+                            <div class="method-desc">(Table, Ordered, Variable, No Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Simpler than TOVS (no straddling)<br>
+                                – Still ordered → O(log B) block search
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Internal fragmentation (wasted space)<br>
+                                – Intra-block scan still needed<br>
+                                – Insert/delete still costly (O(B))
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">TÔF</div>
+                            <div class="method-desc">(Table, Not Ordered, Fixed)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – O(1) insert/delete (append or swap-with-last)<br>
+                                – 100% space utilization<br>
+                                – No reorganization needed
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Search: O(B) — full scan required<br>
+                                – No locality for range queries
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">TÔVS</div>
+                            <div class="method-desc">(Table, Not Ordered, Variable, Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Space-efficient (straddling + variable size)<br>
+                                – O(1) amortized insert (append)<br>
+                                – Soft-delete supported
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Search: O(B) + heavy parsing<br>
+                                – Complex I/O logic
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">TÔVŜ</div>
+                            <div class="method-desc">(Table, Not Ordered, Variable, No Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Simpler than TÔVS<br>
+                                – Append-only, soft-delete friendly
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Wasted space (no straddling)<br>
+                                – Still O(B) search
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">LOF</div>
+                            <div class="method-desc">(List, Ordered, Fixed)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Dynamic block allocation (no pre-allocation)<br>
+                                – Ordered → supports range queries
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Search: O(B) — no binary search on list<br>
+                                – Insert/delete: O(B) + pointer updates<br>
+                                – Pointer overhead (4 bytes/block)
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">LOVS</div>
+                            <div class="method-desc">(List, Ordered, Variable, Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Space-efficient, dynamic, ordered
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Search: O(B) + parsing<br>
+                                – Insert/delete: O(B) + straddle fix + link update<br>
+                                – Very complex I/O
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">LOVŜ</div>
+                            <div class="method-desc">(List, Ordered, Variable, No Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Simpler than LOVS
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Search still O(B)<br>
+                                – Insert/delete costly<br>
+                                – Fragmentation
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">LÔF</div>
+                            <div class="method-desc">(List, Not Ordered, Fixed)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – O(1) insert (append)<br>
+                                – O(1) file merge (pointer join)<br>
+                                – Simple, robust
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Search: O(B)<br>
+                                – No range query support
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">LÔVS</div>
+                            <div class="method-desc">(List, Not Ordered, Variable, Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Max space efficiency (straddling + variable + soft-delete)<br>
+                                – O(1) amortized insert<br>
+                                – O(1) file merge (set Tail₁.link = Head₂)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Search: O(B) + heavy parsing<br>
+                                – Complex I/O procedures (retrieve_string, Write_string)
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">LÔVŜ</div>
+                            <div class="method-desc">(List, Not Ordered, Variable, No Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Simpler than LÔVS<br>
+                                – Append + soft-delete
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Wasted space<br>
+                                – Still O(B) search
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ADVANTAGES/DISADVANTAGES TABLE - WITH INDEXING -->
+        <div id="advantagesWithTable" class="table-wrapper hidden">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="min-width: 180px;">METHOD</th>
+                        <th style="min-width: 400px;">✅ ADVANTAGES</th>
+                        <th style="min-width: 400px;">❌ DISADVANTAGES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="method-name">TOF</div>
+                            <div class="method-desc">(Table, Ordered, Fixed)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Index rarely needed (binary search already fast)<br>
+                                – If sparse index added: O(log B) → O(log Bᵢ) where Bᵢ ≪ B (if index cached)<br>
+                                – Minimal index size (1 entry per block)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Index must be updated on block splits/shifts<br>
+                                – Redundant: external binary search already optimal for ordered T files
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">TOVS</div>
+                            <div class="method-desc">(Table, Ordered, Variable, Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – A dense index (key → (block, offset)) enables O(log N) direct access<br>
+                                – Eliminates intra-block scanning
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Index size large (N entries)<br>
+                                – Index updates expensive (record moves affect offset)<br>
+                                – Straddling complicates offset stability → may need logical IDs instead of offsets
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">TOVŜ</div>
+                            <div class="method-desc">(Table, Ordered, Variable, No Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Dense index enables O(log N) search<br>
+                                – Offsets stable (no straddling) → easier index maintenance
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Index large<br>
+                                – Updates still costly due to shifting
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">TÔF</div>
+                            <div class="method-desc">(Table, Not Ordered, Fixed)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Dense index makes search O(log N)<br>
+                                – Insert/delete: O(log N) index update + O(1) file op<br>
+                                – Simple index (fixed offset per record: offset = i × rec_size)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Index doubles storage overhead<br>
+                                – Index must be kept in sync (failure → inconsistency)
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">TÔVS</div>
+                            <div class="method-desc">(Table, Not Ordered, Variable, Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Dense index enables O(log N) search<br>
+                                – Appending preserves index stability (new keys at end)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Straddling ⇒ record location = (block, offset) may change on reorg<br>
+                                – Index must store logical record ID (not offset) to survive reorg
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">TÔVŜ</div>
+                            <div class="method-desc">(Table, Not Ordered, Variable, No Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Dense index feasible; offsets stable within block
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Index large; still needs update on physical delete/reorg
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">LOF</div>
+                            <div class="method-desc">(List, Ordered, Fixed)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Sparse index (key per block) enables O(log B) search<br>
+                                – Index stores (key, block#) — independent of link
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Index must be updated on block splits/inserts<br>
+                                – Pointer + index redundancy
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">LOVS</div>
+                            <div class="method-desc">(List, Ordered, Variable, Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Dense index enables O(log N) search
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Index maintenance extremely costly (record moves affect location & straddles)<br>
+                                – High risk of inconsistency
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">LOVŜ</div>
+                            <div class="method-desc">(List, Ordered, Variable, No Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Dense/sparse index possible
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Index + linked list = two structures to maintain<br>
+                                – Still high update cost
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">LÔF</div>
+                            <div class="method-desc">(List, Not Ordered, Fixed)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Dense index enables O(log N) search<br>
+                                – Index update: O(log N) + O(1) file write<br>
+                                – Ideal for log + index (e.g., LSM-style write path)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Index = only way to get fast search — otherwise useless for lookups
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">LÔVS</div>
+                            <div class="method-desc">(List, Not Ordered, Variable, Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Dense index with logical IDs (not offsets) → enables O(log N) search and survives
+                                reorg/straddling<br>
+                                – Used in real systems (e.g., SQLite WAL, log-structured stores)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Index must map key → (block#, offset) or → RID<br>
+                                – Requires garbage collection to reclaim LostBytes
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">LÔVŜ</div>
+                            <div class="method-desc">(List, Not Ordered, Variable, No Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Dense index easier (offsets stable within block)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Still needs index for performance
+                            </div>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
+
+    <script>
+        let currentView = 'complexity';
+        let currentIndexing = 'without';
+
+        function switchView(view) {
+            currentView = view;
+
+            // Update button states
+            const buttons = document.querySelectorAll('.controls .control-group:first-child .toggle-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Show/hide tables
+            document.getElementById('complexityTable').classList.add('hidden');
+            document.getElementById('advantagesWithoutTable').classList.add('hidden');
+            document.getElementById('advantagesWithTable').classList.add('hidden');
+
+            if (view === 'complexity') {
+                document.getElementById('complexityTable').classList.remove('hidden');
+                document.getElementById('complexityTable').classList.add('fade-in');
+                document.getElementById('indexingControl').style.display = 'none';
+            } else {
+                document.getElementById('indexingControl').style.display = 'flex';
+                if (currentIndexing === 'without') {
+                    document.getElementById('advantagesWithoutTable').classList.remove('hidden');
+                    document.getElementById('advantagesWithoutTable').classList.add('fade-in');
+                } else {
+                    document.getElementById('advantagesWithTable').classList.remove('hidden');
+                    document.getElementById('advantagesWithTable').classList.add('fade-in');
+                }
+            }
+        }
+
+        function switchIndexing(indexing) {
+            currentIndexing = indexing;
+
+            // Update button states
+            const buttons = document.querySelectorAll('#indexingControl .toggle-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Show/hide tables
+            document.getElementById('advantagesWithoutTable').classList.add('hidden');
+            document.getElementById('advantagesWithTable').classList.add('hidden');
+
+            if (indexing === 'without') {
+                document.getElementById('advantagesWithoutTable').classList.remove('hidden');
+                document.getElementById('advantagesWithoutTable').classList.add('fade-in');
+            } else {
+                document.getElementById('advantagesWithTable').classList.remove('hidden');
+                document.getElementById('advantagesWithTable').classList.add('fade-in');
+            }
+        }
+
+        // Hide indexing control initially
+        document.getElementById('indexingControl').style.display = 'none';
+    </script>
 </body>
 
 </html>
