@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Organization & Search Trees</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            font-size: 2em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .controls {
+            display: flex;
+            gap: 20px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: white;
+            padding: 8px 12px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .control-label {
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 14px;
+        }
+
+        .toggle-btn {
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .toggle-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .toggle-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #764ba2;
+        }
+
+        .main-toggle-btn {
+            padding: 12px 28px;
+            border: 3px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .main-toggle-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        .main-toggle-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #764ba2;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th {
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+            color: white;
+            padding: 16px 12px;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            border-bottom: 3px solid #667eea;
+        }
+
+        td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+            line-height: 1.6;
+        }
+
+        tr:hover {
+            background: #f7fafc;
+        }
+
+        .method-name {
+            font-weight: 700;
+            color: #2d3748;
+            font-size: 15px;
+        }
+
+        .method-desc {
+            color: #718096;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .best {
+            color: #059669;
+            font-weight: 600;
+        }
+
+        .worst {
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        .warning {
+            color: #d97706;
+            font-weight: 600;
+        }
+
+        .complexity {
+            font-family: 'Courier New', monospace;
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .note {
+            color: #64748b;
+            font-size: 11px;
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        .bullet-list {
+            margin-left: 16px;
+            line-height: 1.8;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .table-wrapper {
+            clear: both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .structure-name {
+            font-weight: 700;
+            color: #2d3748;
+            font-size: 14px;
+        }
+
+        .operation-name {
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>📊 File Organization & Search Trees - Comprehensive Analysis</h1>
+
+        <div class="controls">
+            <div class="control-group">
+                <span class="control-label">Category:</span>
+                <button class="main-toggle-btn active" onclick="switchCategory('fileorg')">📁 File Organization</button>
+                <button class="main-toggle-btn" onclick="switchCategory('searchtrees')">🌳 Search Trees</button>
+            </div>
+        </div>
+
+        <!-- FILE ORGANIZATION CONTROLS -->
+        <div id="fileOrgControls" class="controls">
+            <div class="control-group">
+                <span class="control-label">View:</span>
+                <button class="toggle-btn active" onclick="switchView('complexity')">⚡ Complexity</button>
+                <button class="toggle-btn" onclick="switchView('advantages')">📋 Pros & Cons</button>
+            </div>
+
+            <div class="control-group hidden" id="indexingControl">
+                <span class="control-label">Indexing:</span>
+                <button class="toggle-btn active" onclick="switchIndexing('without')">Without Indexing</button>
+                <button class="toggle-btn" onclick="switchIndexing('with')">With Indexing</button>
+            </div>
+        </div>
+
+        <!-- SEARCH TREES CONTROLS -->
+        <div id="searchTreesControls" class="controls hidden">
+            <div class="control-group">
+                <span class="control-label">View:</span>
+                <button class="toggle-btn active" onclick="switchTreeView('complexity')">⚡ Complexity</button>
+                <button class="toggle-btn" onclick="switchTreeView('proscons')">📋 Pros & Cons</button>
+            </div>
+        </div>
+
+
+        <!-- COMPLEXITY TABLE -->
+        <div id="complexityTable" class="table-wrapper fade-in">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="min-width: 200px;">METHOD</th>
+                        <th style="min-width: 200px;">SEARCH</th>
+                        <th style="min-width: 200px;">INSERT</th>
+                        <th style="min-width: 200px;">DELETE</th>
+                        <th style="min-width: 200px;">BULK LOAD</th>
+                        <th style="min-width: 200px;">REORGANIZE</th>
+                        <th style="min-width: 200px;">MERGE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="method-name">TOF</div>
+                            <div class="method-desc">(Table, Ordered, Fixed)</div>
+                        </td>
+                        <td>
+                            <span class="best">✅ Best:</span> <span class="complexity">O(log B)</span><br>
+                            <span class="best">Avg/Worst:</span> <span class="complexity">O(log B)</span>
+                            <div class="note">→ External binary search (blocks = B)</div>
+                        </td>
+                        <td>
+                            <span class="worst">❌ Best:</span> <span class="complexity">O(1)</span> if appending & space
+                            exists<br>
+                            <span class="worst">Avg/Worst:</span> <span class="complexity">O(B)</span>
+                            <div class="note">→ Costly inter-block shifts to maintain order</div>
+                        </td>
+                        <td>
+                            <span class="worst">❌ Best:</span> <span class="complexity">O(1)</span> tail delete<br>
+                            <span class="worst">Avg/Worst:</span> <span class="complexity">O(B)</span>
+                            <div class="note">→ Shift records/blocks to fill gap</div>
+                        </td>
+                        <td>
+                            <span class="best">✅ Best/Avg/Worst:</span> <span class="complexity">O(N log N)</span> I/O
+                            (external sort)
+                            <div class="note">→ One-time sort + sequential write</div>
+                        </td>
+                        <td>
+                            <span class="best">✅ Best/Avg/Worst:</span> <span class="complexity">O(B)</span>
+                            <div class="note">→ Linear scan + repack at target fill factor (e.g., 70%)</div>
+                        </td>
+                        <td>
+                            <span class="best">✅ Best/Avg/Worst:</span> <span class="complexity">O(B₁ + B₂)</span>
+                            <div class="note">→ Standard 2-way merge (like merge-sort phase)</div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="method-name">TOVS</div>
+                            <div class="method-desc">(Table, Ordered, Variable, Straddling)</div>
+                        </td>
+                        <td>
+                            <span class="warning">⚠️ Best/Avg/Worst:</span> <span class="complexity">O(log B)</span>
+                            <div class="note">→ Binary search on block level only; must scan within block (variable
+                                layout ⇒ no direct indexing)</div>
+                        </td>
+                        <td>
+                            <span class="worst">❌ Worst:</span> <span class="complexity">O(B)</span> I/O + parsing
+                            overhead
+                            <div class="note">→ Shifts + straddling handling (cross-block writes)</div>
+                        </td>
+                        <td>
+                            <span class="worst">❌ Worst:</span> <span class="complexity">O(B)</span>
+                            <div class="note">→ Logical delete preferred; physical delete = shift + straddling fix</div>
+                        </td>
+                        <td>
+                            <span class="best">✅ Best/Avg/Worst:</span> <span class="complexity">O(N log N)</span>
+                            <div class="note">→ Sort by key, then pack with straddling (more complex buffer mgmt)</div>
+                        </td>
+                        <td>
+                            <span class="warning">⚠️ Worst:</span> <span class="complexity">O(B)</span> +
+                            parsing/straddling cost
+                            <div class="note">→ Higher than TOF due to variable parsing</div>
+                        </td>
+                        <td>
+                            <span class="best">✅ Best/Avg/Worst:</span> <span class="complexity">O(B₁ + B₂)</span>
+                            <div class="note">→ Merge with careful straddle-aware buffering</div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="method-name">TOVŜ</div>
+                            <div class="method-desc">(Table, Ordered, Variable, No Straddling)</div>
+                        </td>
+                        <td>
+                            <span class="warning">⚠️ Best/Avg/Worst:</span> <span class="complexity">O(log B)</span>
+                            block search + <span class="complexity">O(Rᵦ)</span> scan per block
+                        </td>
+                        <td>
+                            <span class="worst">❌ Worst:</span> <span class="complexity">O(B)</span> I/O + high internal
+                            fragmentation
+                            <div class="note">→ Records never cross blocks ⇒ more wasted space, more splits</div>
+                        </td>
+                        <td>
+                            <span class="warning">⚠️ Same as TOVS but no straddle fix</span>
+                            <div class="note">→ Simpler, but more block splits/merges</div>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(N log N)</span>
+                            <div class="note">→ Easier than straddling version</div>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(B)</span>
+                            <div class="note">→ Simpler than TOVS</div>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(B₁ + B₂)</span>
+                            <div class="note">→ Simpler merging</div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="method-name">TÔF</div>
+                            <div class="method-desc">(Table, Not Ordered, Fixed)</div>
+                        </td>
+                        <td>
+                            <span class="worst">❌ Best/Avg/Worst:</span> <span class="complexity">O(B)</span>
+                            <div class="note">→ Linear scan (unsorted)</div>
+                        </td>
+                        <td>
+                            <span class="best">✅ Best/Avg/Worst:</span> <span class="complexity">O(1)</span>
+                            <div class="note">→ Append to tail</div>
+                        </td>
+                        <td>
+                            <span class="best">✅ Best/Avg/Worst:</span> <span class="complexity">O(1)</span>
+                            <div class="note">→ Overwrite with last record</div>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(N)</span>
+                            <div class="note">→ Sequential write</div>
+                        </td>
+                        <td>
+                            <span class="best">✅ Unnecessary</span>
+                            <div class="note">→ 100% packed</div>
+                        </td>
+                        <td>
+                            <span class="warning">⚠️</span> <span class="complexity">O(B₁ + B₂)</span>
+                            <div class="note">→ Concatenate (result unsorted)</div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="method-name">TÔVS</div>
+                            <div class="method-desc">(Table, Not Ordered, Variable, Straddling)</div>
+                        </td>
+                        <td>
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span> + parsing
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(1)</span> amortized
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(1)</span> logical delete
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(N)</span>
+                        </td>
+                        <td>
+                            <span class="warning">⚠️</span> <span class="complexity">O(B)</span>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(B₁ + B₂)</span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="method-name">TÔVŜ</div>
+                            <div class="method-desc">(Table, Not Ordered, Variable, No Straddling)</div>
+                        </td>
+                        <td>
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(1)</span>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(1)</span>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(N)</span>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(B)</span>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(B₁ + B₂)</span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="method-name">LOF</div>
+                            <div class="method-desc">(List, Ordered, Fixed)</div>
+                        </td>
+                        <td>
+                            <span class="warning">⚠️ Best/Avg/Worst:</span> <span class="complexity">O(B)</span>
+                            <div class="note">→ Cannot binary search — must traverse pointers</div>
+                        </td>
+                        <td>
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span>
+                        </td>
+                        <td>
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(N log N)</span>
+                        </td>
+                        <td>
+                            <span class="warning">⚠️</span> <span class="complexity">O(B)</span>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(B₁ + B₂)</span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="method-name">LOVS</div>
+                            <div class="method-desc">(List, Ordered, Variable, Straddling)</div>
+                        </td>
+                        <td>
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span> + parsing
+                        </td>
+                        <td>
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span>
+                        </td>
+                        <td>
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(N log N)</span>
+                        </td>
+                        <td>
+                            <span class="warning">⚠️</span> <span class="complexity">O(B)</span>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(B₁ + B₂)</span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="method-name">LOVŜ</div>
+                            <div class="method-desc">(List, Ordered, Variable, No Straddling)</div>
+                        </td>
+                        <td>
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span>
+                        </td>
+                        <td>
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span>
+                        </td>
+                        <td>
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(N log N)</span>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(B)</span>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(B₁ + B₂)</span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="method-name">LÔF</div>
+                            <div class="method-desc">(List, Not Ordered, Fixed)</div>
+                        </td>
+                        <td>
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(1)</span>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(1)</span>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(N)</span>
+                        </td>
+                        <td>
+                            <span class="warning">⚠️</span> <span class="complexity">O(B)</span>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(1)</span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="method-name">LÔVS</div>
+                            <div class="method-desc">(List, Not Ordered, Variable, Straddling)</div>
+                        </td>
+                        <td>
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(1)</span>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(1)</span>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(N)</span>
+                        </td>
+                        <td>
+                            <span class="warning">⚠️</span> <span class="complexity">O(B)</span>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(1)</span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <div class="method-name">LÔVŜ</div>
+                            <div class="method-desc">(List, Not Ordered, Variable, No Straddling)</div>
+                        </td>
+                        <td>
+                            <span class="worst">❌</span> <span class="complexity">O(B)</span>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(1)</span>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(1)</span>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(N)</span>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(B)</span>
+                        </td>
+                        <td>
+                            <span class="best">✅</span> <span class="complexity">O(1)</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ADVANTAGES/DISADVANTAGES TABLE - WITHOUT INDEXING -->
+        <div id="advantagesWithoutTable" class="table-wrapper hidden">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="min-width: 180px;">METHOD</th>
+                        <th style="min-width: 400px;">✅ ADVANTAGES</th>
+                        <th style="min-width: 400px;">❌ DISADVANTAGES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="method-name">TOF</div>
+                            <div class="method-desc">(Table, Ordered, Fixed)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Fast O(log B) search via external binary search<br>
+                                – Simple layout, predictable I/O<br>
+                                – Efficient bulk loading & merging
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Insert/delete: O(B) I/O (shifting records/blocks)<br>
+                                – Requires reorganization to maintain performance<br>
+                                – Poor for high-update workloads
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">TOVS</div>
+                            <div class="method-desc">(Table, Ordered, Variable, Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Space-efficient (straddling minimizes waste)<br>
+                                – Ordered → binary search on blocks possible
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Search: O(log B) + linear scan per block (no intra-block indexing)<br>
+                                – Insert/delete: complex (straddle-aware shifting)<br>
+                                – High parsing overhead<br>
+                                – Fragile I/O (record spanning blocks)
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">TOVŜ</div>
+                            <div class="method-desc">(Table, Ordered, Variable, No Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Simpler than TOVS (no straddling)<br>
+                                – Still ordered → O(log B) block search
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Internal fragmentation (wasted space)<br>
+                                – Intra-block scan still needed<br>
+                                – Insert/delete still costly (O(B))
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">TÔF</div>
+                            <div class="method-desc">(Table, Not Ordered, Fixed)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – O(1) insert/delete (append or swap-with-last)<br>
+                                – 100% space utilization<br>
+                                – No reorganization needed
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Search: O(B) — full scan required<br>
+                                – No locality for range queries
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">TÔVS</div>
+                            <div class="method-desc">(Table, Not Ordered, Variable, Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Space-efficient (straddling + variable size)<br>
+                                – O(1) amortized insert (append)<br>
+                                – Soft-delete supported
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Search: O(B) + heavy parsing<br>
+                                – Complex I/O logic
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">TÔVŜ</div>
+                            <div class="method-desc">(Table, Not Ordered, Variable, No Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Simpler than TÔVS<br>
+                                – Append-only, soft-delete friendly
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Wasted space (no straddling)<br>
+                                – Still O(B) search
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">LOF</div>
+                            <div class="method-desc">(List, Ordered, Fixed)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Dynamic block allocation (no pre-allocation)<br>
+                                – Ordered → supports range queries
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Search: O(B) — no binary search on list<br>
+                                – Insert/delete: O(B) + pointer updates<br>
+                                – Pointer overhead (4 bytes/block)
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">LOVS</div>
+                            <div class="method-desc">(List, Ordered, Variable, Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Space-efficient, dynamic, ordered
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Search: O(B) + parsing<br>
+                                – Insert/delete: O(B) + straddle fix + link update<br>
+                                – Very complex I/O
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">LOVŜ</div>
+                            <div class="method-desc">(List, Ordered, Variable, No Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Simpler than LOVS
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Search still O(B)<br>
+                                – Insert/delete costly<br>
+                                – Fragmentation
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">LÔF</div>
+                            <div class="method-desc">(List, Not Ordered, Fixed)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – O(1) insert (append)<br>
+                                – O(1) file merge (pointer join)<br>
+                                – Simple, robust
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Search: O(B)<br>
+                                – No range query support
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">LÔVS</div>
+                            <div class="method-desc">(List, Not Ordered, Variable, Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Max space efficiency (straddling + variable + soft-delete)<br>
+                                – O(1) amortized insert<br>
+                                – O(1) file merge (set Tail₁.link = Head₂)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Search: O(B) + heavy parsing<br>
+                                – Complex I/O procedures (retrieve_string, Write_string)
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">LÔVŜ</div>
+                            <div class="method-desc">(List, Not Ordered, Variable, No Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Simpler than LÔVS<br>
+                                – Append + soft-delete
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Wasted space<br>
+                                – Still O(B) search
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- FILE ORGANIZATION - ADVANTAGES/DISADVANTAGES WITH INDEXING -->
+        <div id="advantagesWithTable" class="table-wrapper hidden">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="min-width: 180px;">METHOD</th>
+                        <th style="min-width: 400px;">✅ ADVANTAGES</th>
+                        <th style="min-width: 400px;">❌ DISADVANTAGES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="method-name">TOF</div>
+                            <div class="method-desc">(Table, Ordered, Fixed)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Index rarely needed (binary search already fast)<br>
+                                – If sparse index added: O(log B) → O(log Bᵢ) where Bᵢ ≪ B (if index cached)<br>
+                                – Minimal index size (1 entry per block)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Index must be updated on block splits/shifts<br>
+                                – Redundant: external binary search already optimal for ordered T files
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">TOVS</div>
+                            <div class="method-desc">(Table, Ordered, Variable, Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – A dense index (key → (block, offset)) enables O(log N) direct access<br>
+                                – Eliminates intra-block scanning
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Index size large (N entries)<br>
+                                – Index updates expensive (record moves affect offset)<br>
+                                – Straddling complicates offset stability → may need logical IDs instead of offsets
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">TOVŜ</div>
+                            <div class="method-desc">(Table, Ordered, Variable, No Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Dense index enables O(log N) search<br>
+                                – Offsets stable (no straddling) → easier index maintenance
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Index large<br>
+                                – Updates still costly due to shifting
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">TÔF</div>
+                            <div class="method-desc">(Table, Not Ordered, Fixed)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Dense index makes search O(log N)<br>
+                                – Insert/delete: O(log N) index update + O(1) file op<br>
+                                – Simple index (fixed offset per record: offset = i × rec_size)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Index doubles storage overhead<br>
+                                – Index must be kept in sync (failure → inconsistency)
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">TÔVS</div>
+                            <div class="method-desc">(Table, Not Ordered, Variable, Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Dense index enables O(log N) search<br>
+                                – Appending preserves index stability (new keys at end)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Straddling ⇒ record location = (block, offset) may change on reorg<br>
+                                – Index must store logical record ID (not offset) to survive reorg
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">TÔVŜ</div>
+                            <div class="method-desc">(Table, Not Ordered, Variable, No Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Dense index feasible; offsets stable within block
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Index large; still needs update on physical delete/reorg
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">LOF</div>
+                            <div class="method-desc">(List, Ordered, Fixed)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Sparse index (key per block) enables O(log B) search<br>
+                                – Index stores (key, block#) — independent of link
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Index must be updated on block splits/inserts<br>
+                                – Pointer + index redundancy
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">LOVS</div>
+                            <div class="method-desc">(List, Ordered, Variable, Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Dense index enables O(log N) search
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Index maintenance extremely costly (record moves affect location & straddles)<br>
+                                – High risk of inconsistency
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">LOVŜ</div>
+                            <div class="method-desc">(List, Ordered, Variable, No Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Dense/sparse index possible
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Index + linked list = two structures to maintain<br>
+                                – Still high update cost
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">LÔF</div>
+                            <div class="method-desc">(List, Not Ordered, Fixed)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Dense index enables O(log N) search<br>
+                                – Index update: O(log N) + O(1) file write<br>
+                                – Ideal for log + index (e.g., LSM-style write path)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Index = only way to get fast search — otherwise useless for lookups
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">LÔVS</div>
+                            <div class="method-desc">(List, Not Ordered, Variable, Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Dense index with logical IDs (not offsets) → enables O(log N) search and survives
+                                reorg/straddling<br>
+                                – Used in real systems (e.g., SQLite WAL, log-structured stores)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Index must map key → (block#, offset) or → RID<br>
+                                – Requires garbage collection to reclaim LostBytes
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="method-name">LÔVŜ</div>
+                            <div class="method-desc">(List, Not Ordered, Variable, No Straddling)</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Dense index easier (offsets stable within block)
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                – Still needs index for performance
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SEARCH TREES - COMPLEXITY TABLE -->
+        <div id="searchTreesComplexityTable" class="table-wrapper hidden">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="min-width: 150px;">OPERATION</th>
+                        <th style="min-width: 150px;">STRUCTURE</th>
+                        <th style="min-width: 200px;">BEST</th>
+                        <th style="min-width: 200px;">AVERAGE</th>
+                        <th style="min-width: 200px;">WORST</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="5" style="vertical-align: middle;">
+                            <div class="operation-name">Search</div>
+                        </td>
+                        <td>
+                            <div class="structure-name">M-ary</div>
+                        </td>
+                        <td><span class="complexity">O(h)</span> (1 block/read per level)</td>
+                        <td><span class="complexity">O(h)</span></td>
+                        <td><span class="complexity">O(h)</span> — degenerate (linear chain)</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="structure-name">B-Tree</div>
+                        </td>
+                        <td><span class="complexity">O(log<sub>t</sub> n)</span></td>
+                        <td><span class="complexity">O(log<sub>t</sub> n)</span></td>
+                        <td><span class="complexity">O(log<sub>t</sub> n)</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="structure-name">B+-Tree</div>
+                        </td>
+                        <td><span class="complexity">O(log<sub>t</sub> n)</span></td>
+                        <td><span class="complexity">O(log<sub>t</sub> n)</span></td>
+                        <td><span class="complexity">O(log<sub>t</sub> n)</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="structure-name">Prefix B+</div>
+                        </td>
+                        <td><span class="complexity">O(log<sub>t′</sub> n)</span>, t′ > t (more keys/node)</td>
+                        <td>same</td>
+                        <td>same</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="structure-name">B*-Tree</div>
+                        </td>
+                        <td><span class="complexity">O(log<sub>1.5t</sub> n)</span> (higher fanout)</td>
+                        <td>same</td>
+                        <td>same</td>
+                    </tr>
+
+                    <tr>
+                        <td rowspan="5" style="vertical-align: middle;">
+                            <div class="operation-name">Insert</div>
+                        </td>
+                        <td>
+                            <div class="structure-name">M-ary</div>
+                        </td>
+                        <td><span class="complexity">O(h)</span></td>
+                        <td><span class="complexity">O(h)</span></td>
+                        <td><span class="complexity">O(h)</span>; may create sparse leaf</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="structure-name">B-Tree</div>
+                        </td>
+                        <td><span class="complexity">O(h)</span></td>
+                        <td><span class="complexity">O(h)</span></td>
+                        <td><span class="complexity">O(h)</span> splits (≤ h new blocks)</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="structure-name">B+-Tree</div>
+                        </td>
+                        <td><span class="complexity">O(h)</span></td>
+                        <td><span class="complexity">O(h)</span></td>
+                        <td><span class="complexity">O(h)</span> (leaf + internal splits)</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="structure-name">Prefix B+</div>
+                        </td>
+                        <td><span class="complexity">O(h)</span> + prefix calc</td>
+                        <td>same</td>
+                        <td>same</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="structure-name">B*-Tree</div>
+                        </td>
+                        <td><span class="complexity">O(h)</span> (often just redistribute)</td>
+                        <td><span class="complexity">O(h)</span></td>
+                        <td><span class="complexity">O(h)</span> (2→3 split)</td>
+                    </tr>
+
+                    <tr>
+                        <td rowspan="4" style="vertical-align: middle;">
+                            <div class="operation-name">Delete</div>
+                        </td>
+                        <td>
+                            <div class="structure-name">M-ary</div>
+                        </td>
+                        <td><span class="complexity">O(h)</span></td>
+                        <td><span class="complexity">O(h)</span></td>
+                        <td><span class="complexity">O(h)</span> (cascading swaps)</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="structure-name">B-Tree</div>
+                        </td>
+                        <td><span class="complexity">O(h)</span></td>
+                        <td><span class="complexity">O(h)</span></td>
+                        <td><span class="complexity">O(h)</span> (cascading merge)</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="structure-name">B+-Tree</div>
+                        </td>
+                        <td><span class="complexity">O(h)</span></td>
+                        <td><span class="complexity">O(h)</span></td>
+                        <td><span class="complexity">O(h)</span> (leaf merge → internal merge)</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="structure-name">Prefix/B*</div>
+                        </td>
+                        <td>Same as B-Tree</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    <tr>
+                        <td rowspan="4" style="vertical-align: middle;">
+                            <div class="operation-name">Bulk Load</div>
+                        </td>
+                        <td>
+                            <div class="structure-name">M-ary</div>
+                        </td>
+                        <td><span class="complexity">O(n·h)</span> (n inserts)</td>
+                        <td>same</td>
+                        <td>same</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="structure-name">B-Tree</div>
+                        </td>
+                        <td><span class="complexity">O(n·h)</span> naive</td>
+                        <td><span class="complexity">O(n/h)</span> optimized (buffered)</td>
+                        <td><span class="complexity">O(n)</span> I/O (n/B blocks written)</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="structure-name">B+-Tree</div>
+                        </td>
+                        <td>same as B-Tree</td>
+                        <td>same</td>
+                        <td>same</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="structure-name">Prefix/B*</div>
+                        </td>
+                        <td>same</td>
+                        <td>same</td>
+                        <td>same</td>
+                    </tr>
+
+                    <tr>
+                        <td rowspan="3" style="vertical-align: middle;">
+                            <div class="operation-name">Merge (Node)</div>
+                        </td>
+                        <td>
+                            <div class="structure-name">M-ary</div>
+                        </td>
+                        <td>— (no formal merge)</td>
+                        <td>—</td>
+                        <td>—</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="structure-name">B-Tree / B+ / B*</div>
+                        </td>
+                        <td><span class="complexity">O(B)</span> (copy keys/children)</td>
+                        <td><span class="complexity">O(B)</span></td>
+                        <td><span class="complexity">O(B)</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="structure-name">Prefix B+</div>
+                        </td>
+                        <td><span class="complexity">O(B)</span> + string copy (variable len)</td>
+                        <td>same</td>
+                        <td>same</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SEARCH TREES - PROS/CONS TABLE -->
+        <div id="searchTreesProsConsTable" class="table-wrapper hidden">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="min-width: 180px;">STRUCTURE</th>
+                        <th style="min-width: 400px;">✅ ADVANTAGES</th>
+                        <th style="min-width: 400px;">❌ DISADVANTAGES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="structure-name">M-ary Search Tree</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                • Simple concept<br>
+                                • Easy to implement<br>
+                                • Good for static/small data
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                • No balancing → degenerate trees<br>
+                                • Poor worst-case performance<br>
+                                • No occupancy guarantees → space waste<br>
+                                • Requires periodic reorg
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="structure-name">B-Tree</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                • Guaranteed balance<br>
+                                • ≤ 50% space overhead<br>
+                                • Efficient search/insert/delete<br>
+                                • Standard for DB/file systems
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                • 50% min occupancy → potential space waste<br>
+                                • Splits/merges add complexity<br>
+                                • Bulk load not optimal by default
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="structure-name">B+-Tree</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                • Leaves contain all data → ideal for range scans<br>
+                                • Chained leaves → efficient sequential access<br>
+                                • Internal nodes smaller → higher fanout<br>
+                                • Standard for database indexes
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                • Duplicate keys in leaves & internal nodes (if not dummy)<br>
+                                • Slightly more complex insertion (link maintenance)
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="structure-name">Prefix B+-Tree</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                • Minimal separators → more per block → lower height<br>
+                                • Better cache efficiency<br>
+                                • Ideal for long/string keys
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                • Variable-length keys → complex block layout<br>
+                                • Extra CPU for prefix calculation<br>
+                                • Insert/delete requires string ops
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="structure-name">B*-Tree</div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                • ≥66% occupancy → better space utilization<br>
+                                • Fewer splits → fewer block writes<br>
+                                • Lower height than B-tree for same n
+                            </div>
+                        </td>
+                        <td>
+                            <div class="bullet-list">
+                                • More complex insertion (redistribution before split)<br>
+                                • 2→3 splits are intricate<br>
+                                • Rarely implemented in practice (B+-tree + fill-factor tuning preferred)
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer
+        style="background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%); color: white; padding: 25px; text-align: center; margin-top: 20px; border-radius: 12px; box-shadow: 0 -4px 20px rgba(0,0,0,0.1);">
+        <div style="font-size: 14px; margin-bottom: 8px;">
+            <strong>© 2025 Database Structures Reference</strong>
+        </div>
+        <div style="font-size: 13px; color: #cbd5e0;">
+            Created by <strong style="color: #a0aec0;">Allal Rayane</strong> |
+            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=or_allal@esi.dz" target="_blank"
+                style="color: #90cdf4; text-decoration: none; transition: color 0.3s;"
+                onmouseover="this.style.color='#63b3ed'" onmouseout="this.style.color='#90cdf4'">or_allal@esi.dz</a>
+        </div>
+    </footer>
+
+    <script>
+        let currentCategory = 'fileorg';
+        let currentView = 'complexity';
+        let currentIndexing = 'without';
+        let currentTreeView = 'complexity';
+
+        function switchCategory(category) {
+            currentCategory = category;
+
+            // Update category button states
+            const categoryButtons = document.querySelectorAll('.controls:first-child .main-toggle-btn');
+            categoryButtons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Hide all tables and controls - use display none
+            const allTables = [
+                'fileOrgControls', 'searchTreesControls', 'complexityTable',
+                'advantagesWithoutTable', 'advantagesWithTable',
+                'searchTreesComplexityTable', 'searchTreesProsConsTable'
+            ];
+            allTables.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.classList.add('hidden');
+                    el.style.display = 'none';
+                }
+            });
+
+            if (category === 'fileorg') {
+                const fileOrgControls = document.getElementById('fileOrgControls');
+                fileOrgControls.classList.remove('hidden');
+                fileOrgControls.style.display = 'flex';
+
+                if (currentView === 'complexity') {
+                    const table = document.getElementById('complexityTable');
+                    table.classList.remove('hidden');
+                    table.style.display = 'block';
+                    table.classList.add('fade-in');
+                } else {
+                    if (currentIndexing === 'without') {
+                        const table = document.getElementById('advantagesWithoutTable');
+                        table.classList.remove('hidden');
+                        table.style.display = 'block';
+                        table.classList.add('fade-in');
+                    } else {
+                        const table = document.getElementById('advantagesWithTable');
+                        table.classList.remove('hidden');
+                        table.style.display = 'block';
+                        table.classList.add('fade-in');
+                    }
+                }
+            } else {
+                const searchControls = document.getElementById('searchTreesControls');
+                searchControls.classList.remove('hidden');
+                searchControls.style.display = 'flex';
+
+                if (currentTreeView === 'complexity') {
+                    const table = document.getElementById('searchTreesComplexityTable');
+                    table.classList.remove('hidden');
+                    table.style.display = 'block';
+                    table.classList.add('fade-in');
+                } else {
+                    const table = document.getElementById('searchTreesProsConsTable');
+                    table.classList.remove('hidden');
+                    table.style.display = 'block';
+                    table.classList.add('fade-in');
+                }
+            }
+        }
+
+        function switchView(view) {
+            currentView = view;
+
+            // Update button states
+            const buttons = document.querySelectorAll('#fileOrgControls .control-group:first-child .toggle-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Hide all file org tables
+            document.getElementById('complexityTable').classList.add('hidden');
+            document.getElementById('complexityTable').style.display = 'none';
+            document.getElementById('advantagesWithoutTable').classList.add('hidden');
+            document.getElementById('advantagesWithoutTable').style.display = 'none';
+            document.getElementById('advantagesWithTable').classList.add('hidden');
+            document.getElementById('advantagesWithTable').style.display = 'none';
+
+            if (view === 'complexity') {
+                const table = document.getElementById('complexityTable');
+                table.classList.remove('hidden');
+                table.style.display = 'block';
+                table.classList.add('fade-in');
+                document.getElementById('indexingControl').classList.add('hidden');
+                document.getElementById('indexingControl').style.display = 'none';
+            } else {
+                const indexControl = document.getElementById('indexingControl');
+                indexControl.classList.remove('hidden');
+                indexControl.style.display = 'flex';
+
+                if (currentIndexing === 'without') {
+                    const table = document.getElementById('advantagesWithoutTable');
+                    table.classList.remove('hidden');
+                    table.style.display = 'block';
+                    table.classList.add('fade-in');
+                } else {
+                    const table = document.getElementById('advantagesWithTable');
+                    table.classList.remove('hidden');
+                    table.style.display = 'block';
+                    table.classList.add('fade-in');
+                }
+            }
+        }
+
+        function switchIndexing(indexing) {
+            currentIndexing = indexing;
+
+            // Update button states
+            const buttons = document.querySelectorAll('#indexingControl .toggle-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Hide both advantage tables
+            document.getElementById('advantagesWithoutTable').classList.add('hidden');
+            document.getElementById('advantagesWithoutTable').style.display = 'none';
+            document.getElementById('advantagesWithTable').classList.add('hidden');
+            document.getElementById('advantagesWithTable').style.display = 'none';
+
+            if (indexing === 'without') {
+                const table = document.getElementById('advantagesWithoutTable');
+                table.classList.remove('hidden');
+                table.style.display = 'block';
+                table.classList.add('fade-in');
+            } else {
+                const table = document.getElementById('advantagesWithTable');
+                table.classList.remove('hidden');
+                table.style.display = 'block';
+                table.classList.add('fade-in');
+            }
+        }
+
+        function switchTreeView(view) {
+            currentTreeView = view;
+
+            // Update button states
+            const buttons = document.querySelectorAll('#searchTreesControls .toggle-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Hide both tree tables
+            document.getElementById('searchTreesComplexityTable').classList.add('hidden');
+            document.getElementById('searchTreesComplexityTable').style.display = 'none';
+            document.getElementById('searchTreesProsConsTable').classList.add('hidden');
+            document.getElementById('searchTreesProsConsTable').style.display = 'none';
+
+            if (view === 'complexity') {
+                const table = document.getElementById('searchTreesComplexityTable');
+                table.classList.remove('hidden');
+                table.style.display = 'block';
+                table.classList.add('fade-in');
+            } else {
+                const table = document.getElementById('searchTreesProsConsTable');
+                table.classList.remove('hidden');
+                table.style.display = 'block';
+                table.classList.add('fade-in');
+            }
+        }
+    </script>
+</body>
+
+</html>
